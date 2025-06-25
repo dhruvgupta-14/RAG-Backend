@@ -1,0 +1,32 @@
+{
+  "name": "rag",
+  "version": "1.0.0",
+  "description": "1. Multer handles PDF upload\r 2. Store PDF in Azure Blob\r 3. Use LangChain.js PDFLoader to extract text\r 4. Use LangChain.js TextSplitter to chunk it\r 5. Use OpenAI/HF Embeddings to vectorize chunks\r 6. Store in Pinecone (or local MemoryVectorStore)\r 7. On user query:\r    - Embed query\r    - Search for similar chunks\r    - Feed result into GPT (via LangChain)\r 8. Return response",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/storage-blob": "^12.27.0",
+    "@langchain/azure-openai": "^0.0.11",
+    "@langchain/community": "^0.3.47",
+    "@langchain/core": "^0.3.61",
+    "@langchain/openai": "^0.5.15",
+    "@langchain/pinecone": "^0.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^12.7.0",
+    "langchain": "^0.3.29",
+    "mime": "^4.0.7",
+    "mongoose": "^8.16.0",
+    "multer": "^2.0.1",
+    "nodemon": "^3.1.10",
+    "pdf-parse": "^1.1.1"
+  }
+}
