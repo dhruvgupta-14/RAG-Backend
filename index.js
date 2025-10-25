@@ -1,10 +1,11 @@
 import express from "express";
+import { index } from "./utils/Pinecone.js";
 import { configDotenv } from "dotenv";
 import { deleteLocalFile, upload } from "./middleware/multer.js";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { embedAndStore } from "./controller/embedAndStore.js";
-import { answerQueryWithMemory } from "./controller/retreiveDocument.js";
+import { answerQueryWithMemory, getMemoryForUser } from "./controller/retreiveDocument.js";
 import cors from "cors";
 import verifyToken from "./middleware/verifyToken.js";
 configDotenv();
@@ -41,7 +42,8 @@ app.post("/ask/ai", verifyToken , async (req, res) => {
     return res.status(400).json({ error: "Query is required" });
   }
   try {
-    const answer = await answerQueryWithMemory(query,namespace);
+     const memory = getMemoryForUser(req.user.uid);
+    const answer = await answerQueryWithMemory(query,namespace,memory);
     res.status(200).json({ answer });
   } catch (err) {
     console.error("Error in /ask/ai:", err);
@@ -52,8 +54,7 @@ app.post("/ask/ai", verifyToken , async (req, res) => {
 app.delete("/file/delete/:filename", verifyToken, async (req, res) => {
   const { filename } = req.params;
   try {
-     const index=process.env.PINECONE_INDEX;
-     await index.delete({ namespace: filename });
+     await index.namespace(filename).deleteAll();
     res.status(200).json({ message: "File deleted successfully" });
   } catch (err) {
     console.error("Error deleting file:", err);

@@ -16,8 +16,14 @@ export async function retrieveRelevantDocs(userQuery, namespace) {
   return results;
 }
 
-// Memory (in production, you'd store per user session)
-const memory = new ChatMessageHistory();
+// Global Memory 
+const userMemoryMap=new Map();
+export function getMemoryForUser(userId) {
+  if (!userMemoryMap.has(userId)) {
+    userMemoryMap.set(userId, new ChatMessageHistory());
+  }
+  return userMemoryMap.get(userId);
+}
 
 
 const prompt = ChatPromptTemplate.fromMessages([
@@ -42,12 +48,18 @@ Your responsibilities:
 
 4. **Maintain a helpful and clear tone.**
    - Structure your answer in a way that not only provides the correct response but also helps the user understand the reasoning behind it if possible.
+
 5. **Respond to greetings intelligently.**
  Be aware that users may greet you before asking a question. or ask some funny questions. between chat you have to act smartly and respond to them in a friendly manner.
  If the user sends a greeting (e.g., “Hi”, “Hello”, “Hey”), respond with a friendly greeting and include:
-"I am an AI research assistant. How can I help you today?"   
+"I am an AI research assistant. How can I help you today?"
 
-You do **not** have access to any external data or internet. Use only the given context to answer.
+6.**For broad questions like "What is this paper about?"**
+   - Summarize the context concisely.
+   - If the summary isn’t clear, say:
+     "I couldn’t find a direct summary; here’s what I inferred from the available content."
+
+If you refer to something, structure it clearly and cite which part of the context it came from (e.g., page or section if available).
 
 Guidelines:
 - Do not hallucinate or assume beyond the given context.
@@ -68,17 +80,44 @@ const chain = RunnableSequence.from([
   new StringOutputParser(),
 ]);
 
-export async function answerQueryWithMemory(userInput,namespace) {
-  const docs = await retrieveRelevantDocs(userInput,namespace);
-  const context = docs.map(doc => doc.pageContent).join("\n\n");
+function truncateContext(text, maxChars = 12000) {
+  if (!text) return "";
+  return text.length > maxChars ? text.slice(0, maxChars) : text;
+}
+
+export async function answerQueryWithMemory(userInput, namespace ,memory) {
+  // Retrieve relevant docs
+  const docs = await retrieveRelevantDocs(userInput, namespace);
+
+  if (!docs || docs.length === 0) {
+    return "I couldn't find the answer based on the provided context.";
+  }
+
+  // Build context
+  const context = docs
+    .map(
+      (doc, i) =>
+        `--- SOURCE: ${doc.metadata?.source || namespace} | chunk ${
+          i + 1
+        }\n${doc.pageContent}`
+    )
+    .join("\n\n");
+
+  const trimmedContext = truncateContext(context);
+
+  // Retrieve past messages
   const chat_history = await memory.getMessages();
+
+  // Run model chain
   const result = await chain.invoke({
-    context: context,
+    context: trimmedContext,
     question: userInput,
-    chat_history
+    chat_history,
   });
 
+  // Update memory
   await memory.addUserMessage(userInput);
   await memory.addAIMessage(result);
+
   return result;
 }

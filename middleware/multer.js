@@ -3,12 +3,7 @@ import path from "path"
 import fs from "fs"
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
     "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
@@ -18,11 +13,11 @@ const fileFilter = (req, file, cb) => {
 };
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './temp')
+    cb(null, './temp') // store file in ./temp folder
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    const ext=path.extname(file.originalname)
+    const ext=path.extname(file.originalname) // keep original file extension
     cb(null, file.fieldname + '-' + uniqueSuffix+ext)
   }
 })
