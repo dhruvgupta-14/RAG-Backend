@@ -6,8 +6,8 @@ A production-ready backend for a **Retrieval-Augmented Generation (RAG)** chatbo
 
 ## 🚀 Live Demo
 
-- **Frontend**: [Coming Soon]
-- **Backend API**: [Coming Soon]
+- **Frontend**: (https://rag-frontend-bay.vercel.app/login)
+- **Backend API**: (https://rag-backend-n2rm.onrender.com)
 
 ---
 
