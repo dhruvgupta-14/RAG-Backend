@@ -1,11 +1,10 @@
-import { AzureOpenAIEmbeddings} from "@langchain/openai";
+import { TaskType } from "@google/generative-ai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const embeddings = new AzureOpenAIEmbeddings({
-  azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
-  azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_API_INSTANCE_NAME,
-  azureOpenAIApiEmbeddingsDeploymentName: process.env.AZURE_OPENAI_API_EMBEDDINGS_DEPLOYMENT_NAME,
-  azureOpenAIApiVersion:  process.env.AZURE_OPENAI_API_VERSION,
-  maxRetries: 1,
+export const embeddings = new GoogleGenerativeAIEmbeddings({
+  model: "gemini-embedding-001",
+  apiKey: process.env.GEMINI_API_KEY,
+  taskType: TaskType.RETRIEVAL_DOCUMENT,
 });

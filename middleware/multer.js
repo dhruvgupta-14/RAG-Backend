@@ -1,14 +1,17 @@
 import multer from "multer"
 import path from "path"
 import fs from "fs"
+
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+    "text/plain", // .txt
   ];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Unsupported file type"));
+    cb(new Error("Unsupported file type. Only PDF, DOCX, and TXT allowed."));
   }
 };
 const storage = multer.diskStorage({

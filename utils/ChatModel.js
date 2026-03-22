@@ -1,10 +1,9 @@
-import { AzureChatOpenAI } from "@langchain/openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import dotenv from "dotenv";
 dotenv.config();
-export const model = new AzureChatOpenAI({
-  azureOpenAIApiKey: process.env.AZURE_OPENAI_KEY,
-  azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_INSTANCE,
-  azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
-  azureOpenAIApiVersion: process.env.AZURE_OPENAI_VERSION,
+
+export const model = new ChatGoogleGenerativeAI({
+  model: "gemini-2.5-flash-lite",
+  apiKey: process.env.GEMINI_API_KEY,
   temperature: 0.3,
 });

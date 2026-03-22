@@ -1,0 +1,50 @@
+RAG Chatbot Test Document
+==========================
+
+## What is RAG?
+
+RAG stands for Retrieval-Augmented Generation. It is a technique used in artificial intelligence that combines two powerful approaches: information retrieval and text generation. Instead of relying solely on a language model's pre-trained knowledge, RAG first retrieves relevant information from an external knowledge base and then uses that information to generate accurate, context-aware responses.
+
+## How RAG Works
+
+The RAG pipeline consists of three main steps:
+
+1. Indexing: Documents are split into smaller chunks, converted into vector embeddings, and stored in a vector database like Pinecone.
+
+2. Retrieval: When a user asks a question, the query is also converted into a vector embedding. The system searches the vector database for chunks that are semantically similar to the query.
+
+3. Generation: The retrieved chunks are passed as context to a large language model (LLM) along with the user's question. The LLM generates a response based strictly on the provided context.
+
+## Key Components
+
+Vector Embeddings: Numbers that represent the meaning of text. Similar texts have similar embeddings. This allows semantic search rather than keyword-based search.
+
+Vector Database: A specialized database designed to store and search vector embeddings efficiently. Examples include Pinecone, Weaviate, and Chroma.
+
+Large Language Model (LLM): The AI model responsible for generating human-like text responses. Examples include GPT-4, Gemini, and Claude.
+
+Chunking: The process of splitting large documents into smaller pieces so they can be embedded and retrieved more accurately.
+
+## Advantages of RAG
+
+- Reduces hallucination by grounding responses in real documents
+- Allows the AI to answer questions about private or recent data
+- More cost-effective than fine-tuning a model
+- Easy to update knowledge base without retraining the model
+
+## Limitations of RAG
+
+- Quality of answers depends on quality of retrieved chunks
+- If the relevant information is not in the document, the system cannot answer
+- Chunking strategy significantly affects retrieval quality
+- Large documents with many chunks can slow down the embedding process
+
+## Applications of RAG
+
+RAG is widely used in customer support chatbots, legal document analysis, medical research assistance, academic paper summarization, and enterprise knowledge management systems.
+
+## About This Project
+
+This RAG Chatbot was built by Dhruv Gupta, a 3rd year Economics student at IIT Kharagpur. The system uses Google Gemini for both embeddings and chat, Pinecone as the vector database, Firebase for authentication and chat history storage, and Node.js with LangChain as the backend framework. The frontend is built with React and Vite.
+
+The project demonstrates how RAG can be applied to make any document queryable using natural language. Users can upload PDF, DOCX, or TXT files and ask questions in plain English to get intelligent answers grounded in the document content.
